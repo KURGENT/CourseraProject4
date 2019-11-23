@@ -1,33 +1,31 @@
-This is Getting and Cleaning Data Assignment to demonstrate skills to create a tidy data set from many files.
+OBJECTIVE:
+The data is from an experiment on Human Activity Recognition.
+The experiment was conducted to take 66 variables (measurements from sensors) from 30 subjects during 6 different activities while carrying a waist-mounted smartphone.  21 subjects were randomly assigned to Train group and 9 to Test Group.
+The objective of this project is to create a table showing means of varibales which name includes "mean()" and "std()" for each subject and each activity.
 
-#first load necessary packages
+Used R Packages:
 library(dplyr)
 library(tidyr)
 library(stringi)
-library(reshape2)
 
-#1.Merges the training and the test sets to create one data set.
-#reading all files and check the content
+Data:
+Source: https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+File name and ocontent:
+"activity_labels.txt"  - a list of activity names
+"features.txt" - a list of varibale(measurement) names
+"subject_test.txt" - subject # of Test Group
+"subject_train.txt" - subject # of Train Group
+"X_test.txt"- data for Test Group
+"X_train.txt"- data for Train Group
+"y_test.txt"- subjects of Test Group
+"y_train.txt"- subjects of Train Group
 
-setwd( "C:/Users/kurgent/Documents/coursera/3. Getting and Cleaning Data/Wk 4/HW/UCI HAR Dataset")
-list.files(path = "C:/Users/kurgent/Documents/coursera/3. Getting and Cleaning Data/Wk 4/HW/UCI HAR Dataset")
-actnames <- read.table("activity_labels.txt",header = F)
-feature <- read.table("features.txt",header = F)
-sub_test <- read.table("subject_test.txt",header = F)
-sub_train <- read.table("subject_train.txt",header = F)
-X_test <- read.table("X_test.txt",header = F)
-X_train <- read.table("X_train.txt",header = F)
-y_test <- read.table("y_test.txt",header = F)
-y_train <- read.table("y_train.txt",header = F)
+Step1: Create a combined tabel listing all data for all subjects, called "TrainTest"
+- Read all the files.
+- Create a Test data set and Train data set listing all the subjects and the data for each group using cbind.
+- Combine both Test and Train Group data into one table using rbind and name the object (data frame) as  "TrainTest" 
 
-#put subject label, test label and data(feature file) for Test data
-TestData <- cbind(sub_test,y_test,X_test)
-TrainData <- cbind(sub_train,y_train,X_train)
-
-#put Train Data and Test Data together
-TrainTest <- rbind(TrainData,TestData)
-
-#4.Appropriately labels the data set with descriptive variable names.
+Step2: Name variables #4.Appropriately labels the data set with descriptive variable names.
 #name variables
 feature_names <- as.character(feature[,2])
 vari_names <- c("subID","TrainTestLabel",feature_names)
