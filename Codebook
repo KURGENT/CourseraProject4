@@ -1,12 +1,13 @@
 OBJECTIVE:
 The data is from an experiment on Human Activity Recognition.
 The experiment was conducted to take 66 variables (measurements from sensors) from 30 subjects during 6 different activities while carrying a waist-mounted smartphone.  21 subjects were randomly assigned to Train group and 9 to Test Group.
-The objective of this project is to create a table showing means of varibales which name includes "mean()" and "std()" for each subject and each activity.
+The objective of this project is to create a tidy data set including means of varibales which name includes "mean()" and "std()" for each subject and each activity.
 
 Used R Packages:
 library(dplyr)
 library(tidyr)
 library(stringi)
+library(reshape2)
 
 Data:
 Source: https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
@@ -20,34 +21,30 @@ File name and ocontent:
 "y_test.txt"- subjects of Test Group
 "y_train.txt"- subjects of Train Group
 
-Step1: Create a combined tabel listing all data for all subjects, called "TrainTest"
+Step1: Create a combined table listing all data for all subjects, called "TrainTest"
 - Read all the files.
 - Create a Test data set and Train data set listing all the subjects and the data for each group using cbind.
 - Combine both Test and Train Group data into one table using rbind and name the object (data frame) as  "TrainTest" 
 
-Step2: Name variables #4.Appropriately labels the data set with descriptive variable names.
+Step2: Name variables
 #name variables
 feature_names <- as.character(feature[,2])
 vari_names <- c("subID","TrainTestLabel",feature_names)
 names(TrainTest) <- vari_names
 
-#2.Extracts only the measurements on the mean and standard deviation for each measurement.
-#select columns including the word mean() and std()
-#make characters of variable names including mean() and std()
-
+Step3: Extracts only the measurements on the mean and standard deviation for each measurement and name the data frame as "TrainTest_Selected"
+- make characters of variable names including mean() and std().  fixed = T was used to exclude "meanFreq().
 mean <- grep("mean()",names(TrainTest),value = T, fixed = T)
 std <- grep("std()",names(TrainTest),value = T, fixed = T)
 
-#subset TrainTest datafram with only columns with subID, TrainTestLavel and mean() and std()
+- subset TrainTest dataframe with only columns with subID, TrainTestLavel and mean() and std()
 TrainTest_Selected <- TrainTest[,c("subID","TrainTestLabel",mean,std)]
 
-#3.Uses descriptive activity names to name the activities in the data set
+Step 4: Uses descriptive activity names to name the activities in the data set and name the data frame as "TrainTest_3"
 TrainTest_3 <- merge(TrainTest_Selected,actnames,by.x = "TrainTestLabel",by.y = "V1",all.x = T)
 names(TrainTest_3) <- sub("V2","Activity",names(TrainTest_3)) 
 
-#5.From the data set in step #4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
-
-##put all the variables to gether to prep for melting
+Steo 5: From the data set in step #4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
 melt <- melt(TrainTest_3,id=c("subID","Activity"),measure.vars=c(mean,std))
 
